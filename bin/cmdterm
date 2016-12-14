@@ -1,0 +1,5 @@
+#!/bin/bash
+set -e
+d="$(dirname "$0")"
+export STARTUP_COMMAND="$2"
+exec xterm -title "$1" -e /bin/bash --rcfile "$d/cmdterm.rc"

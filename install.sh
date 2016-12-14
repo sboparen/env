@@ -6,3 +6,4 @@ makelink() {
     tput sgr0
 }
 makelink .bashrc env/bashrc
+makelink .xinitrc env/xinitrc

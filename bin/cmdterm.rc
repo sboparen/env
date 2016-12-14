@@ -1,0 +1,11 @@
+# Source the files that --rcfile would ignore.
+. /etc/bash.bashrc
+. ~/.bashrc
+
+# Inject the command into the history, so that pressing up will
+# let the user run it again, as if they typed it in.
+history -r
+history -s "$STARTUP_COMMAND"
+
+# Run the command!
+bash -c "$STARTUP_COMMAND"
