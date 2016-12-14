@@ -1,0 +1,6 @@
+[submodule "dwm"]
+	path = dwm
+	url = https://github.com/sboparen/my-dwm
+[submodule "ren"]
+	path = ren
+	url = https://github.com/sboparen/ren
