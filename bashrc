@@ -28,9 +28,38 @@ colour() {
     [ "$1" != "off" ] && echo -n "${TPUTAF[$1]}"
 }
 
-# Crontab aliases.
-vcr() { E 0 $# && vim ~/.crontab; }
-cru() { crontab ~/.crontab; crontab -l; }
+# Bash specific things.
+error() { E 1 $# && return "$1"; }
+lsenv() { E 0 $# && env | sort; }
+lsfun() { E 0 $# && declare -f; }
+lspath() { E 0 $# && echo -e "import os
+for x in os.environ['PATH'].split(':'): print x" | python2; }
+reload() { E 0 $# && { unalias -a; source ~/.bashrc; }; }
+
+########################################################################
+
+# I got used to these even though it's dangerous, because I might do
+# something bad if I'm on a machine that doesn't have them.
+# At some point I should do something about this...
+alias cp='cp -i'
+alias mv='mv -i'
+alias rm='rm -i'
+
+# Make ls output look nicer.
+# I actually like that LANG=C sorts uppercase names before lowercase names.
+ls --version >/dev/null 2>/dev/null && \
+    alias ls='LANG=C ls --color=tty --group-directories-first'
+
+# Essential aliases.
+b()  { E 0 $# && cd "$OLDPWD"; }
+d()  { cd "$@"; }
+l()  { ls -l "$@"; }
+la() { ls -la "$@"; }
+ld() { ls -ld .* "$@"; }
+sk() { E 0 $# && sudo -k; }
+u()  { E 0 $# && cd ..; }
+vw() { G 1 $# && which "$@" && vim "$(which "$@")"; }
+x()  { E 0 $# && exit; }
 
 # Git aliases.
 gib()  { git branch "$@"; }
@@ -40,12 +69,24 @@ gih()  { git checkout "$@"; }
 gipp() { E 0 $# && git pull && git push; }
 gis()  { git status "$@"; }
 
+# Alises for editing dotfiles.
+vb()  { E 0 $# && vim ~/.bashrc; }
+vbl() { E 0 $# && vim ~/.bashlocal; }
+vv()  { E 0 $# && vim ~/.vimrc; }
+vvl() { E 0 $# && vim ~/.vimlocal; }
+
+# Crontab aliases.
+vcr() { E 0 $# && vim ~/.crontab; }
+cru() { crontab ~/.crontab; crontab -l; }
+
 # Manage git repos on a remote server.
 GITHOST=githost # Use .ssh/config to alias.
 GITPATH=git/
 gitcreate() { E 1 $# && ssh "$GITHOST" bin/gitcreate "$GITPATH"/"$1"; }
 gitls() { L 1 $# && ssh "$GITHOST" ls -l \~/"$GITPATH"/"$1"; }
 gitgrab() { E 1 $# && git clone ssh://"$GITHOST"/\~/"$GITPATH"/"$1"; }
+
+########################################################################
 
 # Prompt.
 prompt() {
@@ -59,7 +100,7 @@ prompt() {
     prompt_extend "$hc$uc\\u$hc@\\h" "$extra" "$pc\w" "$err" "\\$"
 }
 prompt_extend() {
-    # Override this in ~/.bashlocal to extend the prompt.
+    # Redefine this in ~/.bashlocal to extend the prompt.
     prompt_draw "$@";
 }
 prompt_draw() {
