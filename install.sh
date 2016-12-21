@@ -5,5 +5,6 @@ makelink() {
     file -h "$1"
     tput sgr0
 }
+cd
 makelink .bashrc env/bashrc
 makelink .xinitrc env/xinitrc
