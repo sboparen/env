@@ -23,7 +23,7 @@ xterm*color7:          rgb:aa/aa/aa
 EOF
 
 # Any custom settings for this machine.
-~/bin/xlocal || true
+source ~/bin/xlocal
 
 # Make some terminals.
 xterm -title "Terminal (@2)" &
