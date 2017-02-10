@@ -1,0 +1,11 @@
+# This lets you use up and down to search your bash history.
+# For example, typing "v<up>" will show you the last command
+# you ran starting with "v", and pressing Enter will run that
+# command again.  Note that you should configure unlimited
+# bash history to use this effectively.  This is a classic
+# trick; I'm not sure exactly where it originated, but see
+# https://www.ukuug.org/events/linux2003/papers/bash_tips/
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+"\e[C": forward-char
+"\e[D": backward-char

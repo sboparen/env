@@ -7,4 +7,5 @@ makelink() {
 }
 cd
 makelink .bashrc env/bashrc
+makelink .inputrc env/inputrc
 makelink .xinitrc env/xinitrc

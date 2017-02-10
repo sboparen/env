@@ -111,4 +111,4 @@ prompt_draw() {
 PROMPT_COMMAND=prompt
 
 # Source local settings.
-[ -f ~/.bashlocal ] && source ~/.bashlocal
+if [ -f ~/.bashlocal ]; then source ~/.bashlocal; fi
