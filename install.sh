@@ -8,6 +8,7 @@ makelink() {
 cd
 makelink .bashrc env/bashrc
 makelink .inputrc env/inputrc
+makelink .vimrc env/vimrc
 makelink .xinitrc env/xinitrc
 
 PACKAGES=(
