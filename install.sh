@@ -9,3 +9,48 @@ cd
 makelink .bashrc env/bashrc
 makelink .inputrc env/inputrc
 makelink .xinitrc env/xinitrc
+
+PACKAGES=(
+acpi
+audacity
+build-essential
+bup
+diffpdf
+dtach
+dzen2
+encfs
+fdupes
+feh
+ffmpeg
+gedit
+git
+ibus-anthy
+imagemagick
+iotop
+jekyll
+jmtpfs
+libx11-dev
+libxinerama-dev
+mpv
+p7zip-full
+pdftk
+python-pygame
+rhino
+rtorrent
+ruby
+sloccount
+stalonetray
+suckless-tools
+tidy
+tig
+ttf-mscorefonts-installer
+unclutter
+vim
+xclip
+xpdf
+xterm
+)
+echo
+echo sudo apt-get install texlive-full
+echo
+echo sudo apt-get install "${PACKAGES[@]}"
