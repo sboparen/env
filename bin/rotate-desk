@@ -1,0 +1,11 @@
+#!/bin/bash
+# Create a new "desktop" directory every month.
+#
+# To use this, add a line like the following to your crontab:
+#     0 3 * * *  env/bin/rotate-desk
+set -e
+cd ~
+d=`date '+archive/%Y/desk%m'`
+mkdir -p "$d"
+if [ -L desk ]; then rm -f desk; fi
+ln -s "$d" desk

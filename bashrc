@@ -86,6 +86,9 @@ gitcreate() { E 1 $# && ssh "$GITHOST" bin/gitcreate "$GITPATH"/"$1"; }
 gitls() { L 1 $# && ssh "$GITHOST" ls -l \~/"$GITPATH"/"$1"; }
 gitgrab() { E 1 $# && git clone ssh://"$GITHOST"/\~/"$GITPATH"/"$1"; }
 
+# Other commands.
+todo() { ack TO''DO "$@"; }
+
 ########################################################################
 
 # Prompt.

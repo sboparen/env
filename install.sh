@@ -12,7 +12,10 @@ makelink .vimrc env/vimrc
 makelink .xinitrc env/xinitrc
 
 PACKAGES=(
+ack-grep
 acpi
+adb
+anki
 audacity
 build-essential
 bup
@@ -33,8 +36,10 @@ jmtpfs
 libx11-dev
 libxinerama-dev
 mpv
+nautilus-dropbox
 p7zip-full
 pdftk
+python-pip
 python-pygame
 rhino
 rtorrent
@@ -55,3 +60,5 @@ echo
 echo sudo apt-get install texlive-full
 echo
 echo sudo apt-get install "${PACKAGES[@]}"
+echo
+echo pip install --user requests
