@@ -5,11 +5,17 @@ makelink() {
     file -h "$1"
     tput sgr0
 }
+
 cd
 makelink .bashrc env/bashrc
 makelink .inputrc env/inputrc
 makelink .vimrc env/vimrc
 makelink .xinitrc env/xinitrc
+
+mkdir -p bin
+makelink .bashlocal bin/bashlocal
+makelink .crontab bin/crontab
+makelink .vimlocal bin/vimlocal
 
 PACKAGES=(
 ack-grep

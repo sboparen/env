@@ -82,11 +82,17 @@ cru() { crontab ~/.crontab; crontab -l; }
 # Manage git repos on a remote server.
 GITHOST=githost # Use .ssh/config to alias.
 GITPATH=git/
-gitcreate() { E 1 $# && ssh "$GITHOST" bin/gitcreate "$GITPATH"/"$1"; }
 gitls() { L 1 $# && ssh "$GITHOST" ls -l \~/"$GITPATH"/"$1"; }
 gitgrab() { E 1 $# && git clone ssh://"$GITHOST"/\~/"$GITPATH"/"$1"; }
+gitcreate() { E 1 $# && ssh "$GITHOST" bash <<EOF
+test -e "$GITPATH"/"$1" && exit 22
+mkdir -p "$GITPATH"/"$1" && cd "$GITPATH"/"$1" && git init --bare
+EOF
+}
 
 # Other commands.
+makeogg() { E 1 $# && mpv --no-video --ao=pcm "$1" && oggenc audiodump.wav; }
+pdfpages() { E 2 $# && pdfjam --paper letterpaper "$1" "$2" -o out.pdf; }
 todo() { ack TO''DO "$@"; }
 
 ########################################################################
