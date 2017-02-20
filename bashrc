@@ -8,6 +8,10 @@ export PATH="$HOME"/bin:"$HOME"/env/bin:"$PATH"
 # Unlimited bash history.
 unset HISTSIZE; export HISTSIZE; unset HISTFILESIZE; export HISTFILESIZE
 
+# Environment variables.
+export EDITOR=vim
+export VISUAL="$EDITOR"
+
 # For shorter argcount checking.
 E() { [ $# == 2 ] && [ "$2" -eq "$1" ]; }
 G() { [ $# == 2 ] && [ "$2" -ge "$1" ]; }
@@ -32,8 +36,7 @@ colour() {
 error() { E 1 $# && return "$1"; }
 lsenv() { E 0 $# && env | sort; }
 lsfun() { E 0 $# && declare -f; }
-lspath() { E 0 $# && echo -e "import os
-for x in os.environ['PATH'].split(':'): print x" | python2; }
+lspath() { E 0 $# && echo "$PATH" | tr : '\n'; }
 reload() { E 0 $# && { unalias -a; source ~/.bashrc; }; }
 
 ########################################################################
@@ -69,7 +72,7 @@ gih()  { git checkout "$@"; }
 gipp() { E 0 $# && git pull && git push; }
 gis()  { git status "$@"; }
 
-# Alises for editing dotfiles.
+# Aliases for editing dotfiles.
 vb()  { E 0 $# && vim ~/.bashrc; }
 vbl() { E 0 $# && vim ~/.bashlocal; }
 vv()  { E 0 $# && vim ~/.vimrc; }
@@ -82,18 +85,37 @@ cru() { crontab ~/.crontab; crontab -l; }
 # Manage git repos on a remote server.
 GITHOST=githost # Use .ssh/config to alias.
 GITPATH=git/
-gitls() { L 1 $# && ssh "$GITHOST" ls -l \~/"$GITPATH"/"$1"; }
-gitgrab() { E 1 $# && git clone ssh://"$GITHOST"/\~/"$GITPATH"/"$1"; }
+gitls() { L 1 $# && ssh "$GITHOST" ls -l "$GITPATH$1"; }
+gitgrab() { E 1 $# && git clone "$GITHOST":"$GITPATH$1"; }
 gitcreate() { E 1 $# && ssh "$GITHOST" bash <<EOF
-test -e "$GITPATH"/"$1" && exit 22
-mkdir -p "$GITPATH"/"$1" && cd "$GITPATH"/"$1" && git init --bare
+test -e "$GITPATH$1" && exit 22
+mkdir -p "$GITPATH$1" && cd "$GITPATH$1" && git init --bare
 EOF
 }
 
 # Other commands.
+inside() {
+    G 2 $# || return 1
+    pushd "$1" >/dev/null || return 1
+    shift
+    "$@"
+    local rc=$?
+    popd >/dev/null
+    return "$rc"
+}
 makeogg() { E 1 $# && mpv --no-video --ao=pcm "$1" && oggenc audiodump.wav; }
 pdfpages() { E 2 $# && pdfjam --paper letterpaper "$1" "$2" -o out.pdf; }
 todo() { ack TO''DO "$@"; }
+today() { E 0 $# && date '+%Y%m%d'; }
+todayfull() { E 0 $# && date '+%Y%m%d.%H%M%S'; }
+what() {
+    G 1 $# || return 1
+    local rc=1
+    alias "$1" 2>/dev/null && rc=0
+    declare -f "$1" 2>/dev/null && rc=0
+    which "$1" 2>/dev/null && rc=0
+    return "$rc"
+}
 
 ########################################################################
 
@@ -103,8 +125,8 @@ prompt() {
     local hc="$(colour "${PS1HC-off}" e)"
     local pc="$(colour "${PS1PC-4}" e)"
     local ec="$(colour "${EXTRA_COLOUR-off}" e)"
-    local uc=""; [ $(whoami) = sboparen ] || uc="$(colour 4 e)"
-    local err=""; [ "$code" != '0' ] && err="$(colour 12 e)(""$code"")"
+    local uc=""; [ "$(whoami)" = sboparen ] || uc="$(colour 4 e)"
+    local err=""; [ "$code" != '0' ] && err="$(colour 12 e)($code)"
     local extra=""; [ "$EXTRA" ] && extra="$ec$EXTRA"
     prompt_extend "$hc$uc\\u$hc@\\h" "$extra" "$pc\w" "$err" "\\$"
 }
@@ -114,7 +136,7 @@ prompt_extend() {
 }
 prompt_draw() {
     local acc="$(colour off e)"
-    for x in "$@"; do [ "$x" ] && acc="$acc""$x""$(colour off e) "; done
+    for x in "$@"; do [ "$x" ] && acc="$acc$x$(colour off e) "; done
     PS1="$acc"
 }
 PROMPT_COMMAND=prompt

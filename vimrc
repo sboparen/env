@@ -35,7 +35,7 @@ if has("spell")
     set spellcapcheck=$^
     highlight clear SpellCap
     autocmd BufLeave * set nospell
-    autocmd BufEnter *.html,*.md,*.tex set spell
+    autocmd BufEnter *.html,*.md,*.tex,*.txt set spell
 endif
 
 "Better PageUp and PageDown."
