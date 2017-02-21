@@ -25,12 +25,16 @@ EOF
 # Any custom settings for this machine.
 source ~/bin/xlocal
 
+# Run flux if installed.
+flux
+
 # Make some terminals.
 xterm -title "Terminal (@2)" &
 xterm -title "Terminal (@2)" &
 
 # Start dwm.
 cd ~/env/dwm
+cmdterm "Terminal (@S)" "./status.py" &
 cmdterm "Terminal (@S)" "make && ./dwm-run"
 cd
 

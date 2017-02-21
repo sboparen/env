@@ -1,0 +1,7 @@
+#!/bin/bash
+# https://justgetflux.com/linux.html
+set -e
+if [ "$(sha1sum -- "$(which xflux)" | awk '{ print $1 }')" != \
+    f43d7118d9445f7df05f91d435feed4179e77e42 ]; then exit 1; fi
+if pgrep -u "$USER" xflux >/dev/null; then echo already running; exit 1; fi
+xflux -l "${FLUXLAT:-43.449554}" -g "${FLUXLONG:--80.492235}"
