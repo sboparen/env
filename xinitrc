@@ -29,8 +29,8 @@ source ~/bin/xlocal
 flux
 
 # Make some terminals.
-xterm -title "Terminal (@2)" &
-xterm -title "Terminal (@2)" &
+st -T "Terminal (@2)" &
+st -T "Terminal (@2)" &
 
 # Start dwm.
 cd ~/env/dwm

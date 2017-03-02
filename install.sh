@@ -32,6 +32,7 @@ encfs
 fdupes
 feh
 ffmpeg
+flake8
 gedit
 git
 ibus-anthy
@@ -43,6 +44,7 @@ libx11-dev
 libxinerama-dev
 mpv
 nautilus-dropbox
+nload
 p7zip-full
 pdftk
 python-pip

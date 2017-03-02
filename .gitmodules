@@ -7,3 +7,6 @@
 [submodule "ren"]
 	path = ren
 	url = https://github.com/sboparen/ren
+[submodule "st"]
+	path = st
+	url = https://github.com/sboparen/st

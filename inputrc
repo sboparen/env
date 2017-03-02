@@ -9,3 +9,7 @@
 "\e[B": history-search-forward
 "\e[C": forward-char
 "\e[D": backward-char
+
+# Hacks for st.
+"\e[P": delete-char
+C-y: nothing

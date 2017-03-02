@@ -9,6 +9,7 @@ export PATH="$HOME"/bin:"$HOME"/env/bin:"$PATH"
 unset HISTSIZE; export HISTSIZE; unset HISTFILESIZE; export HISTFILESIZE
 
 # Environment variables.
+export ACK_OPTIONS='--sort-files'
 export EDITOR=vim
 export VISUAL="$EDITOR"
 

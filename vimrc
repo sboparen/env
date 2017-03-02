@@ -28,7 +28,7 @@ map <Leader>8 :set noexpandtab shiftwidth=8 softtabstop=8<CR>
 
 "Spell check."
 if has("spell")
-    set spelllang=en_ca spellfile=~/.spell.utf8.add
+    set spelllang=en_ca,cjk spellfile=~/.spell.utf8.add
     if filereadable(expand("%:p:h")."/.spellfile.add")
         exe "setlocal spellfile=".expand("%:p:h")."/.spellfile.add"
     endif
