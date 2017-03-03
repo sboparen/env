@@ -1,4 +1,4 @@
-export PATH="$HOME"/bin:"$HOME"/env/bin:"$PATH"
+export PATH="$HOME"/bin:"$HOME"/env/bin:"$HOME"/.local/bin:"$PATH"
 
 # If not interactive, don't do anything else.
 [ -z "$PS1" ] && { [ -f ~/.bashlocal ] && . ~/.bashlocal; return 0; }

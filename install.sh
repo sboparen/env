@@ -32,7 +32,6 @@ encfs
 fdupes
 feh
 ffmpeg
-flake8
 gedit
 git
 ibus-anthy
@@ -69,4 +68,4 @@ echo sudo apt-get install texlive-full
 echo
 echo sudo apt-get install "${PACKAGES[@]}"
 echo
-echo pip install --user requests
+echo pip install --user flake8 requests
