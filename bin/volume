@@ -1,0 +1,65 @@
+#!/usr/bin/env python2
+import argparse
+import re
+import subprocess
+import sys
+
+Card = '-c0'
+MuteControl = 'Master'
+VolumeControl = 'Master'
+
+def get_mute():
+    cmd = ['amixer', Card, 'get', MuteControl]
+    return 'off' in subprocess.check_output(cmd)
+
+def set_mute(value):
+    cmd = ['amixer', Card, 'set', MuteControl, 'mute' if value else 'unmute']
+    subprocess.check_output(cmd)
+    update_status()
+
+def get_volume():
+    cmd = ['amixer', Card, 'get', VolumeControl]
+    data = subprocess.check_output(cmd)
+    return int(re.search('\\[([0-9]*)%\\]', data).group(1))
+
+def set_volume(value):
+    cmd = ['amixer', Card, 'set', VolumeControl, '--', '%d%%' % value]
+    subprocess.check_output(cmd)
+    cmd = ['amixer', Card, 'set', 'Headphone', '--', '70%']
+    subprocess.check_output(cmd)
+    cmd = ['amixer', Card, 'set', 'PCM', '--', '100%']
+    subprocess.check_output(cmd)
+    update_status()
+
+def rounded_volume():
+    return (get_volume() + 2) / 5 * 5
+
+def volume_string():
+    return '%s %d%%' % ('Silent' if get_mute() else 'Volume', rounded_volume())
+
+def update_status():
+    key = '_STATUS_VOLUME'
+    cmd = ['xprop', '-root', '-f', key, '8s', '-set', key, volume_string()]
+    subprocess.check_call(cmd)
+
+def main():
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers()
+    subparser = subparsers.add_parser('up')
+    subparser.set_defaults(func=lambda: set_volume(rounded_volume() + 5))
+    subparser = subparsers.add_parser('down')
+    subparser.set_defaults(func=lambda: set_volume(rounded_volume() - 5))
+    subparser = subparsers.add_parser('mute')
+    subparser.set_defaults(func=lambda: set_mute(True))
+    subparser = subparsers.add_parser('unmute')
+    subparser.set_defaults(func=lambda: set_mute(False))
+    subparser = subparsers.add_parser('toggle')
+    subparser.set_defaults(func=lambda: set_mute(not get_mute()))
+    if len(sys.argv) == 1:
+        print volume_string()
+        exit()
+    args = parser.parse_args()
+    args.func()
+
+if __name__ == '__main__':
+    main()
