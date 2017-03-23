@@ -11,6 +11,7 @@ unset HISTSIZE; export HISTSIZE; unset HISTFILESIZE; export HISTFILESIZE
 # Environment variables.
 export ACK_OPTIONS='--sort-files'
 export EDITOR=vim
+export HISTCONTROL=ignorespace
 export VISUAL="$EDITOR"
 
 # For shorter argcount checking.
