@@ -5,7 +5,10 @@
 #     0 3 * * *  env/bin/rotate-desk
 set -e
 cd ~
-d=`date '+archive/%Y/desk%m'`
-mkdir -p "$d"
+y=`date '+%Y'`
+m=`date '+%Y/desk%m'`
+mkdir -p "$m"
 if [ -L desk ]; then rm -f desk; fi
-ln -s "$d" desk
+ln -s "$m" desk
+if [ -L c ]; then rm -f c; fi
+ln -s "$y" c

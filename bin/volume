@@ -27,8 +27,11 @@ def set_volume(value):
     subprocess.check_output(cmd)
     cmd = ['amixer', Card, 'set', 'Headphone', '--', '70%']
     subprocess.check_output(cmd)
-    cmd = ['amixer', Card, 'set', 'PCM', '--', '100%']
-    subprocess.check_output(cmd)
+    try:
+        cmd = ['amixer', Card, 'set', 'PCM', '--', '100%']
+        subprocess.check_output(cmd)
+    except subprocess.CalledProcessError:
+        pass
     update_status()
 
 def rounded_volume():

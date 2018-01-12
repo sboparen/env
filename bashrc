@@ -51,9 +51,9 @@ alias mv='mv -i'
 alias rm='rm -i'
 
 # Make ls output look nicer.
-# I actually like that LANG=C sorts uppercase names before lowercase names.
+# Use the C locale to have uppercase names sort before lowercase names.
 ls --version >/dev/null 2>/dev/null && \
-    alias ls='LANG=C ls --color=tty --group-directories-first'
+    alias ls='LC_COLLATE=C ls --color=tty --group-directories-first'
 
 # Essential aliases.
 b()  { E 0 $# && cd "$OLDPWD"; }
