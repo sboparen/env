@@ -8,6 +8,7 @@ audacity
 build-essential:apt base-devel:pacman
 bup
 diffpdf:apt
+dos2unix:pacman
 dtach
 dzen2
 encfs
@@ -26,6 +27,7 @@ libxinerama-dev:apt libxinerama:pacman
 mpv
 nautilus-dropbox:apt
 nload
+otf-ipafont:pacman
 p7zip-full:apt
 pdftk:apt
 pypy
@@ -42,6 +44,7 @@ tig
 ttf-mscorefonts-installer:apt
 unclutter
 vim
+vorbis-tools:pacman
 xclip
 xpdf
 xterm
