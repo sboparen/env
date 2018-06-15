@@ -1,0 +1,42 @@
+#!/usr/bin/env python2
+import argparse
+import os
+import smtplib
+import sys
+
+# Use a separate account that you don't care about!
+# Also, enable 2-Step Verification and create an App Password:
+# https://support.google.com/accounts/answer/185833
+def credentials():
+    with open(os.path.join(os.getenv('HOME'), '.gmcred')) as f:
+        username, password = f.read().rstrip('\n').split('\n')
+        return username, password
+
+def send_with_gmail(recipients, body):
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.ehlo()
+    server.starttls()
+    server.ehlo()
+    username, password = credentials()
+    server.login(username, password)
+    server.sendmail(username, recipients, body)
+    server.quit()
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('recipient', nargs='+')
+    parser.add_argument('--subject', '-s')
+    args = parser.parse_args()
+    body = sys.stdin.read()
+    if args.subject is not None:
+        body = 'Subject: %s\n%s' % (args.subject, body)
+    recipients = args.recipient
+    if len(recipients) > 0:
+        body = 'To: %s\n%s' % (', '.join(recipients), body)
+    assert len(recipients) > 0
+    for r in recipients:
+        assert '@' in r
+    send_with_gmail(recipients, body)
+
+if __name__ == '__main__':
+    main()
