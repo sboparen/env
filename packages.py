@@ -36,6 +36,7 @@ python-pygame:apt
 rhino
 rtorrent
 ruby
+sharutils:pacman
 sloccount
 stalonetray
 suckless-tools:apt dmenu:pacman
