@@ -1,9 +1,6 @@
 [submodule "dwm"]
 	path = dwm
 	url = https://github.com/sboparen/dwm
-[submodule "gmail-snooze"]
-	path = gmail-snooze
-	url = https://github.com/sboparen/gmail-snooze
 [submodule "ren"]
 	path = ren
 	url = https://github.com/sboparen/ren
