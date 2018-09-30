@@ -1,0 +1,167 @@
+#!/usr/bin/env python2
+"""
+Automated email reminders.
+
+Create ~/bin/reminders.py and populate it with events such as
+    event(lead_time_in_days=30, events_for_year=yearly("[Dec 25] Christmas"))
+    event(0, monthly("[%s 20] Pay Credit Card"))
+    event(10, weekday_count("[May 2nd Sun] Mother's Day"))
+    event(0, anniversary("[2007 Aug 31] %d %s"))
+
+Then, add something like this to your crontab to have it
+automatically send the emails:
+    0 7 * * * yearly -c mail you@example.com -s
+"""
+# The MIT License
+#
+# Copyright (c) 2010-2018 Simon Parent
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation
+# files (the "Software"), to deal in the Software without
+# restriction, including without limitation the rights to use, copy,
+# modify, merge, publish, distribute, sublicense, and/or sell copies
+# of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+# KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+# WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+# AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.
+from datetime import *
+import argparse
+import itertools
+import os
+import re
+import subprocess
+month_name = [None] + [date(2001, m, 1).strftime('%b') for m in xrange(1, 12+1)]
+weekday_name = [date(2001, 1, 1+d).strftime('%a') for d in xrange(7)]
+assert weekday_name[0] == 'Mon'
+
+epoch_year = 2018
+all_events = []
+def event(lead_time_in_days, events_for_year):
+    all_events.append((lead_time_in_days, events_for_year))
+
+def yearly(msg):
+    s = re.search('\[([A-Za-z]{3}) ([0-9]?[0-9])\]', msg)
+    m, d = month_name.index(s.group(1)), int(s.group(2))
+    def events_for_year(y):
+        return [(date(y, m, d), msg)]
+    return events_for_year
+
+def monthly(msg):
+    s = re.search('\[%s ([0-9]?[0-9])\]', msg)
+    d = int(s.group(1))
+    def events_for_year(y):
+        return [(date(y, m, d), msg % month_name[m]) for m in xrange(1, 12+1)]
+    return events_for_year
+
+def weekday_count(msg):
+    s = re.search('\[([A-Za-z]{3}) ([0-9])[a-z]* ([A-Za-z]{3})\] (.*)', msg)
+    m, k = month_name.index(s.group(1)), int(s.group(2))
+    weekday, name = weekday_name.index(s.group(3)), s.group(4)
+    def events_for_year(y):
+        seen = 0
+        for d in xrange(1, 40):
+            e = date(y, m, d)
+            if e.weekday() == weekday:
+                seen += 1
+                if seen == k:
+                    return [(e, "[%s %d] %s" % (month_name[m], d, name))]
+    return events_for_year
+
+def anniversary(msg, monthly=False):
+    s = re.search('\[([0-9]{4}) ([A-Za-z]{3}) ([0-9]?[0-9])\] (.*)', msg)
+    y0, m0, d0 = int(s.group(1)), month_name.index(s.group(2)), int(s.group(3))
+    name0 = s.group(4)
+    def events_for_year(y):
+        ret = []
+        for m in xrange(1, 12+1):
+            if m != m0 and not monthly:
+                continue
+            e = date(y, m, d0)
+            k = (y - y0) * 12 + (m - m0)
+            name = name0 % ((k/12, 'Years') if k % 12 == 0 else (k, 'Months'))
+            msg = '[%s %d] %s' % (month_name[m], d0, name)
+            ret.append((e, msg))
+        return ret
+    return events_for_year
+
+def main():
+    # Parse arguments.
+    parser = argparse.ArgumentParser(description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-c', nargs=argparse.REMAINDER,
+        dest='command', default=['echo'],
+        help='command to send the emails '
+             '(will be given the message as its last argument)')
+    group.add_argument('-l', '--list', action='store_true',
+        help='list all events (for debugging)')
+    args = parser.parse_args()
+
+    # Load the reminders.
+    script_path = os.path.join(os.getenv('HOME'), 'bin/reminders.py')
+    assert os.path.exists(script_path)
+    exec(open(script_path).read(), globals())
+
+    # Build the list of events.
+    class event:
+        def __init__(self, msgday, eventday, msg, source):
+            self.msgday = msgday
+            self.eventday = eventday
+            self.msg = msg
+            self.source = source
+            self.emailed = False
+        def log(self):
+            return '%s %s %s' % (str(self.msgday), str(self.eventday), self.msg)
+        def __str__(self):
+            return 'event(%s, %s, %5s, %s)' % \
+               (str(self.msgday), str(self.eventday), \
+                repr(self.emailed), str(self.msg))
+    today = date.today()
+    events = []
+    for advance, events_for_year in all_events:
+        for year in xrange(epoch_year, today.year+2):
+            for d, msg in events_for_year(year):
+                events.append(event(
+                    d - timedelta(days=advance), d, msg, events_for_year))
+    events.sort(key=lambda e: (e.msgday, e.eventday, e.msg))
+
+    # Find out which emails have already been sent.
+    logpath = os.path.join(os.getenv('HOME'), '.yearly')
+    with open(logpath) as f:
+        already_done = set(s.rstrip('\n') for s in f.readlines())
+    for e in events:
+        if e.log() in already_done:
+            e.emailed = True
+
+    # Loop over the events.
+    if args.list:
+        for e in events:
+            print e
+        return
+    events = [e for e in events if e.msgday <= today and not e.emailed]
+    key = lambda e: e.source
+    for _, es in itertools.groupby(sorted(events, key=key), key):
+        es = list(es)
+        cmd = args.command + [es[-1].msg]
+        if len(es) > 1:
+            cmd[-1] += ' (%d additional reminders suppressed)' % (len(es)-1)
+        pr, pw = os.pipe(); os.close(pw)
+        subprocess.check_call(cmd, stdin=pr)
+        if args.command != ['echo']:
+            with open(logpath, 'a') as f:
+                for e in es:
+                    f.write(e.log() + '\n')
+
+if __name__ == '__main__':
+    main()
