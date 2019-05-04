@@ -13,6 +13,7 @@ dos2unix:pacman
 dtach
 dzen2
 encfs
+fcitx-kkc:pacman
 fdupes
 feh
 ffmpeg
