@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 packages = '''
 ack-grep:apt ack:pacman
 acpi
@@ -10,7 +10,6 @@ build-essential:apt base-devel:pacman
 bup
 diffpdf:apt
 dos2unix:pacman
-dtach
 dzen2
 encfs
 fcitx-kkc:pacman
@@ -38,7 +37,6 @@ pypy
 python2-xlib:pacman
 python-pip:apt
 python-pygame:apt
-rhino
 rtorrent
 ruby
 sharutils:pacman
@@ -67,11 +65,11 @@ def packages_for(platform):
     return [p.split(':')[0] for p in packages
             if ':' not in p or p.endswith(':' + platform)]
 
-print
-print 'sudo apt-get install texlive-full'
-print
-print 'sudo apt-get install %s' % ' '.join(packages_for('apt'))
-print
-print 'pip install --user flake8 requests'
-print
-print 'sudo pacman -S --needed %s' % ' '.join(packages_for('pacman'))
+print()
+print('sudo apt-get install texlive-full')
+print()
+print('sudo apt-get install %s' % ' '.join(packages_for('apt')))
+print()
+print('pip install --user flake8 requests')
+print()
+print('sudo pacman -S --needed %s' % ' '.join(packages_for('pacman')))
