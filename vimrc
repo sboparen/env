@@ -57,6 +57,7 @@ map <F12> :bnext<CR>
 map  <Leader>f mz{V}!fmt -w70<CR>'z
 vmap <Leader>f !fmt -w70<CR>
 vmap <Leader>s !sort<CR>
+map  <Leader>w :%s/\s\+$//e<CR>:%s/\t/        /ge<CR>
 map  <Leader>W :%s/\s\+$//<CR>
 map  <Leader>/ :let @/ = ""<CR>
 
