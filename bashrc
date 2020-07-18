@@ -67,6 +67,7 @@ vw() { G 1 $# && which "$@" && vim "$(which "$@")"; }
 x()  { E 0 $# && exit; }
 
 # Git aliases.
+gg()   { git grep "$@"; }
 gib()  { git branch "$@"; }
 gic()  { git commit -v "$@"; }
 gid()  { git diff "$@"; }

@@ -37,6 +37,7 @@ pypy
 python2-xlib:pacman
 python-pip:apt
 python-pygame:apt
+python-xlib:pacman
 rtorrent
 ruby
 sharutils:pacman

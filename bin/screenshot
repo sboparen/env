@@ -1,3 +1,4 @@
 #!/bin/bash
 set -e
-import ~/desk/screenshot."$(date +%Y%m%d.%H%M%S)".png
+mkdir -p ~/desk/screenshots/
+import ~/desk/screenshots/"$(date +%Y%m%d.%H%M%S)".png
