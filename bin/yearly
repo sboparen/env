@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 """
 Automated email reminders.
 
@@ -41,8 +41,8 @@ import itertools
 import os
 import re
 import subprocess
-month_name = [None] + [date(2001, m, 1).strftime('%b') for m in xrange(1, 12+1)]
-weekday_name = [date(2001, 1, 1+d).strftime('%a') for d in xrange(7)]
+month_name = [None] + [date(2001, m, 1).strftime('%b') for m in range(1, 12+1)]
+weekday_name = [date(2001, 1, 1+d).strftime('%a') for d in range(7)]
 assert weekday_name[0] == 'Mon'
 
 epoch_year = 2018
@@ -57,11 +57,14 @@ def yearly(msg):
         return [(date(y, m, d), msg)]
     return events_for_year
 
-def monthly(msg):
+def monthly(msg, step=1, start=1):
     s = re.search('\[%s ([0-9]?[0-9])\]', msg)
     d = int(s.group(1))
     def events_for_year(y):
-        return [(date(y, m, d), msg % month_name[m]) for m in xrange(1, 12+1)]
+        return [
+            (date(y, m, d), msg % month_name[m])
+            for m in range(start, 12+1, step)
+        ]
     return events_for_year
 
 def weekday_count(msg):
@@ -70,7 +73,7 @@ def weekday_count(msg):
     weekday, name = weekday_name.index(s.group(3)), s.group(4)
     def events_for_year(y):
         seen = 0
-        for d in xrange(1, 40):
+        for d in range(1, 40):
             e = date(y, m, d)
             if e.weekday() == weekday:
                 seen += 1
@@ -84,7 +87,7 @@ def anniversary(msg, monthly=False):
     name0 = s.group(4)
     def events_for_year(y):
         ret = []
-        for m in xrange(1, 12+1):
+        for m in range(1, 12+1):
             if m != m0 and not monthly:
                 continue
             e = date(y, m, d0)
@@ -130,7 +133,7 @@ def main():
     today = date.today()
     events = []
     for advance, events_for_year in all_events:
-        for year in xrange(epoch_year, today.year+2):
+        for year in range(epoch_year, today.year+2):
             for d, msg in events_for_year(year):
                 events.append(event(
                     d - timedelta(days=advance), d, msg, events_for_year))
@@ -147,10 +150,10 @@ def main():
     # Loop over the events.
     if args.list:
         for e in events:
-            print e
+            print(e)
         return
     events = [e for e in events if e.msgday <= today and not e.emailed]
-    key = lambda e: e.source
+    key = lambda e: id(e.source)
     for _, es in itertools.groupby(sorted(events, key=key), key):
         es = list(es)
         cmd = args.command + [es[-1].msg]

@@ -34,7 +34,6 @@ otf-ipafont:pacman
 p7zip-full:apt
 pdftk:apt
 pypy
-python2-xlib:pacman
 python-pip:apt
 python-pygame:apt
 python-xlib:pacman
