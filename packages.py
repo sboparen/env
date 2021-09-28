@@ -21,6 +21,7 @@ gedit
 git
 imagemagick
 iotop
+iwd:pacman
 jekyll:apt
 jmtpfs:apt
 libx11-dev:apt libx11:pacman
@@ -37,6 +38,7 @@ pypy
 python-pip:apt
 python-pygame:apt
 python-xlib:pacman
+redshift
 rtorrent
 ruby
 sharutils:pacman
@@ -52,7 +54,6 @@ ttf-mscorefonts-installer:apt
 unclutter
 vim
 vorbis-tools:pacman
-wicd-gtk:pacman
 xclip
 xorg-fonts-misc:pacman
 xorg:pacman
