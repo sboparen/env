@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+cd ~/central
+if [ -d .git/refs/remotes/origin ]; then
+    git pull
+    git push
+fi
+vim "${1-todo}"
+git commit -a -m auto || true
+if [ -d .git/refs/remotes/origin ]; then
+    git push
+fi

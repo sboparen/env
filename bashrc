@@ -85,6 +85,10 @@ vvl() { E 0 $# && vim ~/.vimlocal; }
 vcr() { E 0 $# && vim ~/.crontab; }
 cru() { crontab ~/.crontab; crontab -l; }
 
+# Central.
+q()   { L 1 $# && central "$@"; }
+j()   { E 0 $# && central journal; }
+
 # Manage git repos on a remote server.
 GITHOST=githost # Use .ssh/config to alias.
 GITPATH=git/
