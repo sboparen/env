@@ -45,7 +45,13 @@ month_name = [None] + [date(2001, m, 1).strftime('%b') for m in range(1, 12+1)]
 weekday_name = [date(2001, 1, 1+d).strftime('%a') for d in range(7)]
 assert weekday_name[0] == 'Mon'
 
-epoch_year = 2018
+def days_in_year(y):
+    d = date(y, 1, 1)
+    while d.year == y:
+        yield d
+        d += timedelta(days=1)
+
+epoch_year = 2021
 all_events = []
 def event(lead_time_in_days, events_for_year):
     all_events.append((lead_time_in_days, events_for_year))
@@ -64,6 +70,17 @@ def monthly(msg, step=1, start=1):
         return [
             (date(y, m, d), msg % month_name[m])
             for m in range(start, 12+1, step)
+        ]
+    return events_for_year
+
+def weekly(msg):
+    s = re.search('\[([A-Za-z]{3}) %s]', msg)
+    weekday = weekday_name.index(s.group(1))
+    def events_for_year(y):
+        return [
+            (d, msg % ("%s %d" % (month_name[d.month], d.day)))
+            for d in days_in_year(y)
+            if d.weekday() == weekday
         ]
     return events_for_year
 
