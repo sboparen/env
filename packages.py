@@ -4,7 +4,6 @@ ack-grep:apt ack:pacman
 acpi
 adb:apt
 alsa-utils:pacman
-anki
 audacity
 build-essential:apt base-devel:pacman
 bup
@@ -27,6 +26,7 @@ jmtpfs:apt
 libx11-dev:apt libx11:pacman
 libxinerama-dev:apt libxinerama:pacman
 mesa-demos:pacman
+mesa-utils:pacman
 mpv
 nautilus-dropbox:apt
 nload
@@ -56,6 +56,7 @@ vim
 vorbis-tools:pacman
 xclip
 xorg-fonts-misc:pacman
+xorg-xinit:pacman
 xorg:pacman
 xpdf
 xterm
